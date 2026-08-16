@@ -7,8 +7,19 @@ authors = [
     { name = "maxhall", email = "maxhall@kth.se" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pandas>=3.0.5",
+]
 
 [build-system]
 requires = ["uv_build>=0.12.4,<0.13.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.3.0",
+    "pytest>=9.1.1",
+    "ruff>=0.16.3",
+]
+[tool.ruff]
+extend-exclude = ["data/Starter_Code_Load_Steam_Datasets.ipynb"]

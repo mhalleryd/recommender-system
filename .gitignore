@@ -9,5 +9,14 @@ wheels/
 # Virtual environments
 .venv
 
-# Data
-steam-review-and-bundle-dataset/
+# Pytest and ruff cache
+.pytest_cache/
+.ruff_cache/
+
+# Ignore everything under data (recursive)
+src/recommender_system/data/**
+
+# Re-include only these three files
+!src/recommender_system/data/load.py
+!src/recommender_system/data/transform.py
+!src/recommender_system/data/__init__.py
