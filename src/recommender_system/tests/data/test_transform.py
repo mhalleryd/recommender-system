@@ -25,6 +25,20 @@ def test_transform_reviews():
                     "helpful": "No ratings yet",
                 },
             ],
+
+        },
+        {
+            "user_id": "user_2",
+            "reviews": [
+                {
+                    "item_id": pd.NA,
+                    "recommend": False,
+                    "review": "hmm, unsure",
+                    "funny": "",
+                    "last_edited": "",
+                    "helpful": "No ratings yet",
+                },
+            ],
         }
     ])
 

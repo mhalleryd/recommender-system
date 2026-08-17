@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
+
 def load_data(file_path: str | Path) -> pd.DataFrame:
     rows = []
 

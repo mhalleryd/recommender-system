@@ -15,6 +15,10 @@ def transform_reviews(df: pd.DataFrame) -> pd.DataFrame:
         axis=1
     )
 
-    return reviews.drop(
+    reviews = reviews.drop(
     columns=["review", "funny", "last_edited", "helpful"]
-)
+    )
+    reviews = reviews.astype({'item_id': 'str', 'recommend': 'bool'})
+
+    return reviews.dropna()
+
