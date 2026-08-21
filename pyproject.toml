@@ -21,9 +21,15 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "ipykernel>=7.3.0",
+    "mypy>=2.3.1",
+    "pandas-stubs>=3.0.5.260730",
     "pytest>=9.1.1",
     "ruff>=0.16.3",
+    "scipy-stubs>=1.18.0.1",
 ]
 
 [tool.ruff.lint]
 exclude = ["*.ipynb"]
+
+[tool.mypy]
+follow_untyped_imports = true

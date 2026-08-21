@@ -12,6 +12,7 @@ wheels/
 # Pytest and ruff cache
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
 
 # Ignore everything under data (recursive)
 src/recommender_system/data/**
