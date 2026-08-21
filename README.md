@@ -4,6 +4,15 @@ An end-to-end recommendation system built using Steam user-game interaction data
 
 The project is also used to practice production-oriented software engineering for machine learning, including automated testing, type checking, linting, dependency management, and continuous integration.
 
+## Setup
+
+The project uses [uv](https://docs.astral.sh/uv/) for dependency management. Clone the repo and install the environment:
+```text
+git clone https://github.com/mhalleryd/recommender-system.git
+cd recommender-system
+uv sync
+```
+
 ## Project Status
 
 Current work focuses on item-item collaborative filtering. Future work will include matrix factorization and comparison of different recommendation approaches.
@@ -11,6 +20,9 @@ Current work focuses on item-item collaborative filtering. Future work will incl
 ## Repository structure
 ```text
 .
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── src/
 │   └── recommender_system/
 │       ├── data/
@@ -18,22 +30,30 @@ Current work focuses on item-item collaborative filtering. Future work will incl
 │       │   └── transform.py
 │       ├── features/
 │       │   └── interactions.py
-│       └── models/
-│           └── collaborative_filtering.py
-│
-├── tests/
-│   ├── data/
-│   ├── features/
-│   └── models/
-│
-├── notebooks/
-│   ├── EDA.ipynb
-│   └── collaborative_filtering.ipynb
-│
+│       ├── models/
+│       │   └── collaborative_filtering.py
+│       ├── notebooks/
+│       │   ├── EDA.ipynb
+│       │   └── collaborative_filtering.ipynb
+│       ├── tests/
+│       │   ├── conftest.py
+│       │   ├── data/
+│       │   │   ├── test_load.py
+│       │   │   └── test_transform.py
+│       │   ├── features/
+│       │   │   └── test_interactions.py
+│       │   └── models/
+│       │       └── test_CF.py
+│       └── py.typed
+├── .gitignore
+├── .python-version
 ├── pyproject.toml
 ├── uv.lock
 └── README.md
 ```
+
+Local dataset files are stored in `src/recommender_system/data/` and are excluded
+from version control.
 
 ## Dataset
 
