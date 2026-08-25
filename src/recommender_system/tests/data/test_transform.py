@@ -1,6 +1,6 @@
 import pandas as pd
 
-from recommender_system.data.transform import transform_reviews
+from recommender_system.data.transform import train_test_split, transform_reviews
 
 
 def test_transform_reviews():
@@ -48,3 +48,26 @@ def test_transform_reviews():
     assert list(result["user_id"]) == ["user_1", "user_1"]
     assert list(result["item_id"]) == ["123", "456"]
     assert list(result["recommend"]) == [True, False]
+
+
+def test_train_test_split():
+    reviews = pd.DataFrame({
+        "user_id": ["A", "A", "A", "B", "B"],
+        "item_id": ["1", "2", "3", "4", "5"],
+        "recommend": [True, True, True, True, True],
+        "posted": [
+            "Posted January 1, 2020.",
+            "Posted January 2, 2020.",
+            "Posted January 3, 2020.",
+            "Posted January 1, 2020.",
+            "Posted January 2, 2020.",
+        ],
+    })
+
+    train, test = train_test_split(reviews, n_test=1)
+    assert len(train) == 3
+    assert len(test) == 2
+    assert list(train["user_id"]) == ["A", "A", "B"]
+    assert list(train["item_id"]) == ["1", "2", "4"]
+    assert list(test["user_id"]) == ["A", "B"]
+    assert list(test["item_id"]) == ["3", "5"]
