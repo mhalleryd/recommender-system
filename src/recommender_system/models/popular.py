@@ -17,7 +17,7 @@ def recommend_popular(
 
     user_items = reviews.groupby("user_id")["item_id"].agg(set)
 
-    recommendations = []
+    recommendations = [] #type: ignore
 
     for user_id, seen_items in user_items.items():
         unseen_items = [
