@@ -2,14 +2,14 @@ import pandas as pd
 from scipy import sparse
 
 
-def df2interact_mat(df: pd.DataFrame, user_col: str, item_col: str, interact_col: str) -> tuple[sparse.csr_matrix, dict[str, int]]:
+def df2interact_mat(df: pd.DataFrame, user_col: str, item_col: str, interact_col: str) -> tuple[sparse.csr_matrix, dict[str, int], dict[str, int]]:
 	"""
 	Convert a pandas DataFrame to a sparse interaction matrix using scipy.sparse."""
 
 	if not isinstance(df, pd.DataFrame):
 		raise TypeError("Input must be a pandas DataFrame.")
 	
-	user_ids = pd.Index(df[user_col].drop_duplicates())
+	user_ids = pd.Index(df[user_col].astype(str).drop_duplicates())
 	item_ids = pd.Index(df[item_col].astype(str).drop_duplicates()) # astype(str) needed for pylance
 
 	user_to_idx = {u: i for i, u in enumerate(user_ids)}
@@ -24,4 +24,4 @@ def df2interact_mat(df: pd.DataFrame, user_col: str, item_col: str, interact_col
 		shape=(len(user_ids), len(item_ids))
 	)
 
-	return interactions, item_to_idx
+	return interactions, item_to_idx, user_to_idx

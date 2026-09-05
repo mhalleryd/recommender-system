@@ -3,6 +3,7 @@ import pytest
 from recommender_system.models.collaborative_filtering import (
     get_item_similarity_matrix,
     get_similar_items,
+    recommend_item_cf,
 )
 
 
@@ -15,7 +16,7 @@ def test_get_item_similarity_matrix(sample_reviews):
 def test_similarity_matrix_is_symmetric(sample_reviews):
     similarities, _ = get_item_similarity_matrix(sample_reviews)
 
-    assert (similarities != similarities.T).nnz == 0
+    assert (similarities - similarities.T).nnz == 0
 
 def test_items_are_similar_to_themselves(sample_reviews):
     similarities, item_to_idx = get_item_similarity_matrix(sample_reviews)
@@ -47,3 +48,22 @@ def test_get_similar_items_excludes_input_item(sample_reviews):
     )
 
     assert "A" not in result["item_id"].values
+
+
+def test_recommend_item_cf_returns_expected_items(sample_reviews):
+    similarities, item_to_idx = get_item_similarity_matrix(sample_reviews)
+
+    result = recommend_item_cf(sample_reviews, similarities, item_to_idx, n=1)
+
+    recommendations = dict(zip(result["user_id"], result["item_id"]))
+    assert recommendations == {"u1": "C", "u2": "B", "u3": "A"}
+
+
+def test_recommend_item_cf_excludes_seen_items(sample_reviews):
+    similarities, item_to_idx = get_item_similarity_matrix(sample_reviews)
+
+    result = recommend_item_cf(sample_reviews, similarities, item_to_idx)
+
+    seen_by_user = sample_reviews.groupby("user_id")["item_id"].apply(set)
+    for user_id, item_id in zip(result["user_id"], result["item_id"]):
+        assert item_id not in seen_by_user[user_id]
