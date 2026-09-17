@@ -16,3 +16,6 @@ wheels/
 
 #Raw data folder
 data/
+
+# Model artifacts
+artifacts/

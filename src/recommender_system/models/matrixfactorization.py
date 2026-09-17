@@ -15,7 +15,15 @@ class MatrixFactorization:
         learning_rate: float = 0.01,
         regularization: float = 0.01,
     ):
+        #Store for traceability
+        self._n_epochs = n_epochs
+        self._learning_rate = learning_rate
+        self._regularization = regularization
+
         n_users, n_items = X.shape
+
+        self._n_users = n_users
+        self._n_items = n_items
 
         rng = np.random.default_rng(self.random_state)
 
@@ -59,6 +67,19 @@ class MatrixFactorization:
     def predict_for_user(self, user_idx):
         return self.U[user_idx] @ self.V.T
 
+    def save(self, path):
+        np.savez(
+            path,
+            U=self.U,
+            V=self.V,
+            n_factors=self.n_factors,
+            random_state=self.random_state,
+            n_epochs=self._n_epochs,
+            learning_rate=self._learning_rate,
+            regularization=self._regularization,
+            n_users=self._n_users,
+            n_items=self._n_items,
+        )
 
 
 
