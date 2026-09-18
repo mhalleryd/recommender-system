@@ -1,5 +1,11 @@
+import json
+
+import numpy as np
 import pandas as pd
 import pytest
+from scipy.sparse import csr_matrix, save_npz
+
+from recommender_system.inference.recommender import Recommender
 
 
 @pytest.fixture
@@ -9,3 +15,67 @@ def sample_reviews():
         "item_id": ["A", "B", "A", "C", "B"],
         "recommend": [1, 1, 1, 1, 1],
     })
+
+
+@pytest.fixture
+def artifact_dir(tmp_path):
+    """Create a small recommender artifact for testing."""
+
+    U = np.array([[1.0]])
+    V = np.array([
+        [1.0],
+        [0.8],
+        [0.5],
+        [0.2],
+    ])
+
+    X = csr_matrix([[1, 0, 0, 0]])
+
+    user_to_idx = {
+        "user-1": 0,
+    }
+
+    item_to_idx = {
+        "item-a": 0,
+        "item-b": 1,
+        "item-c": 2,
+        "item-d": 3,
+    }
+
+    popular_items = [
+        "item-d",
+        "item-c",
+        "item-b",
+        "item-a",
+    ]
+
+    # Save model
+    np.savez(
+        tmp_path / "model.npz",
+        U=U,
+        V=V,
+    )
+
+    # Save interactions
+    save_npz(
+        tmp_path / "interactions.npz",
+        X,
+    )
+
+    # Save metadata
+    artifacts = {
+        "user_to_idx.json": user_to_idx,
+        "item_to_idx.json": item_to_idx,
+        "popular_items.json": popular_items,
+    }
+
+    for filename, data in artifacts.items():
+        with open(tmp_path / filename, "w") as f:
+            json.dump(data, f)
+
+    return tmp_path
+
+
+@pytest.fixture
+def recommender(artifact_dir):
+    return Recommender.load(artifact_dir)
