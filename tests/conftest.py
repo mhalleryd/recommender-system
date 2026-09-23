@@ -49,6 +49,29 @@ def artifact_dir(tmp_path):
         "item-a",
     ]
 
+    item_metadata = {
+            "item-a": {
+                "app_name": "Item A",
+                "developer": "Developer A",
+                "genres": ["Action"],
+            },
+            "item-b": {
+                "app_name": "Item B",
+                "developer": "Developer B",
+                "genres": ["Adventure"],
+            },
+            "item-c": {
+                "app_name": "Item C",
+                "developer": "Developer C",
+                "genres": ["RPG"],
+            },
+            "item-d": {
+                "app_name": "Item D",
+                "developer": "Developer D",
+                "genres": ["Strategy"],
+            },
+        }
+
     # Save model
     np.savez(
         tmp_path / "model.npz",
@@ -67,6 +90,7 @@ def artifact_dir(tmp_path):
         "user_to_idx.json": user_to_idx,
         "item_to_idx.json": item_to_idx,
         "popular_items.json": popular_items,
+        "item_metadata.json": item_metadata,
     }
 
     for filename, data in artifacts.items():

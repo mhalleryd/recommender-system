@@ -4,11 +4,12 @@ from pathlib import Path
 from scipy.sparse import save_npz
 
 from recommender_system.data.load import load_data
-from recommender_system.data.transform import transform_reviews
+from recommender_system.data.transform import transform_item_metadata, transform_reviews
 from recommender_system.models.collaborative_filtering import df2interact_mat
 from recommender_system.models.matrixfactorization import MatrixFactorization
 
 DATA_PATH = Path("data/australian_user_reviews.json.gz")
+GAME_DATA_PATH = Path("data/steam_games.json.gz")
 ARTIFACT_DIR = Path("artifacts/mf")
 
 N_FACTORS = 25
@@ -24,6 +25,10 @@ def main() -> None:
     # Load and transform
     df = load_data(DATA_PATH)
     reviews = transform_reviews(df)
+
+    games = load_data(GAME_DATA_PATH)
+    item_metadata = transform_item_metadata(games)
+
 
     # Build interaction matrix
     X, item_to_idx, user_to_idx = df2interact_mat(
@@ -71,6 +76,9 @@ def main() -> None:
 
     with open(ARTIFACT_DIR / "popular_items.json", "w") as f:
         json.dump(popular_items, f)
+
+    with open(ARTIFACT_DIR / "item_metadata.json", "w") as f:
+        json.dump(item_metadata, f)
 
     print(f"Artifacts saved to {ARTIFACT_DIR}")
 

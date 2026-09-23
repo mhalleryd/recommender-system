@@ -34,6 +34,7 @@ class Recommender:
         item_to_idx: dict[str, int],
         X: sp.csr_matrix,
         popular_items: list[str],
+        item_metadata: dict[str, object]
     ):
         self.U = U
         self.V = V
@@ -45,6 +46,7 @@ class Recommender:
 
         self.X = X
         self.popular_items = popular_items
+        self.item_metadata = item_metadata
 
     def recommend(self, user_id: str, k: int = 10) -> list[str]:
         """Recommend the top-k items for a given user.
@@ -135,6 +137,9 @@ class Recommender:
         with open(artifact_dir / "popular_items.json", "r") as f:
             popular_items = json.load(f)
 
+        with open(artifact_dir / "item_metadata.json", "r") as f:
+            item_metadata = json.load(f)
+
         return cls(
             U=model["U"],
             V=model["V"],
@@ -142,4 +147,8 @@ class Recommender:
             item_to_idx=item_to_idx,
             X=X,
             popular_items=popular_items,
+            item_metadata=item_metadata,
         )
+
+    def get_item_metadata(self, item_id: str) -> Any | None:
+        return self.item_metadata.get(item_id)

@@ -1,3 +1,5 @@
+from typing import Hashable, Any
+
 import pandas as pd
 
 
@@ -50,3 +52,22 @@ def train_test_split(
     train = positive.drop(test.index)
 
     return train, test
+
+def transform_item_metadata(df: pd.DataFrame) -> dict[Hashable, dict[Hashable, Any]]:
+    """Transform item metadata into a dictionary for easy lookup."""
+
+    df = df.rename({'id': 'item_id'}, axis=1)
+    df = df.drop(columns=['discount_price', 
+                          'reviews_url', 
+                          'price', 
+                          'early_access',
+                          'metascore',
+                          'title']
+                    )
+    df = df.dropna(subset=['app_name', 'item_id'])
+
+    # Fill NaN values with None for JSON serialization
+    df = df.astype(object).where(df.notna(), None)
+
+    return df.drop_duplicates('item_id').set_index('item_id').to_dict(orient='index')
+

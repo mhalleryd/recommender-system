@@ -15,9 +15,26 @@ def get_recommendations(
     user_id: str,
     k: int = Query(default=10, ge=1, le=100),
 ):
-    items = recommender.recommend(user_id, k)
+    item_ids = recommender.recommend(user_id, k)
+
+    recommendations = []
+
+    for item_id in item_ids:
+        metadata = recommender.get_item_metadata(item_id) or {}
+
+        recommendations.append({
+            "item_id": item_id,
+            "name": metadata.get("app_name"),
+            "developer": metadata.get("developer"),
+            "genres": metadata.get("genres"),
+        })
 
     return {
         "user_id": user_id,
-        "recommendations": items,
+        "recommendations": recommendations,
     }
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
