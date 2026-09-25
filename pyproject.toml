@@ -9,10 +9,9 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.141.1",
-    "matplotlib>=3.11.1",
-    "pandas>=3.0.5",
-    "scikit-learn>=1.9.0",
+    "numpy>=2.5.2",
     "scipy>=1.18.0",
+    "uvicorn>=0.53.0",
 ]
 
 [build-system]
@@ -22,10 +21,13 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "ipykernel>=7.3.0",
+    "matplotlib>=3.11.2",
     "mypy>=2.3.1",
+    "pandas>=3.0.6",
     "pandas-stubs>=3.0.5.260730",
     "pytest>=9.1.1",
     "ruff>=0.16.3",
+    "scikit-learn>=1.9.1",
     "scipy-stubs>=1.18.0.1",
 ]
 
