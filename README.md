@@ -1,87 +1,59 @@
-# Steam Recommendation System
+# Steam Game Recommender
 
-An end-to-end recommendation system built using Steam user-game interaction data. The project explores collaborative filtering methods for recommending games, with a particular focus on reproducible ML workflows.
+An end-to-end recommendation system built using the [Steam Review and Bundle Dataset](https://cseweb.ucsd.edu/~jmcauley/datasets.html#steam_data).
 
-The project is also used to practice production-oriented software engineering for machine learning, including automated testing, type checking, linting, dependency management, and continuous integration.
+The project explores recommendation methods for sparse implicit-feedback data and implements a deployable recommendation API.
 
-## Setup
+## Models
 
-The project uses [uv](https://docs.astral.sh/uv/) for dependency management. Clone the repo and install the environment:
+Three approaches are implemented and evaluated:
+
+- Popularity baseline
+- Item-item collaborative filtering
+- Matrix factorization
+
+Models are evaluated using a temporal train/test split with **Recall@K** and **NDCG@K**. The popularity baseline performs best on the current dataset, which is highly sparse.
+
+The matrix factorization model is used for personalized inference, with popular items used as a fallback for unknown users.
+
+## API
+
+The trained recommender is exposed through a **FastAPI** service:
+
 ```text
-git clone https://github.com/mhalleryd/recommender-system.git
-cd recommender-system
-uv sync
+GET /recommendations/{user_id}?k=10
 ```
 
-## Project Status
+Recommendations include Steam game metadata and exclude games the user has already interacted with.
 
-Current work focuses on item-item collaborative filtering. Future work will include matrix factorization and comparison of different recommendation approaches.
+## Project Structure
 
-## Repository structure
 ```text
-.
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── src/
-│   └── recommender_system/
-│       ├── data/
-│       │   ├── load.py
-│       │   └── transform.py
-│       ├── features/
-│       │   └── interactions.py
-│       ├── models/
-│       │   └── collaborative_filtering.py
-│       ├── notebooks/
-│       │   ├── EDA.ipynb
-│       │   └── collaborative_filtering.ipynb
-│       ├── tests/
-│       │   ├── conftest.py
-│       │   ├── data/
-│       │   │   ├── test_load.py
-│       │   │   └── test_transform.py
-│       │   ├── features/
-│       │   │   └── test_interactions.py
-│       │   └── models/
-│       │       └── test_CF.py
-│       └── py.typed
-├── .gitignore
-├── .python-version
-├── pyproject.toml
-├── uv.lock
-└── README.md
+src/recommender_system/
+├── api/          # FastAPI service
+├── data/         # Data loading and preprocessing
+├── features/     # Interaction matrix construction
+├── inference/    # Recommendation inference
+└── models/       # Recommendation models
+
+scripts/          # Training scripts
+tests/            # Unit and integration tests
+notebooks/        # Exploration and experiments
 ```
 
-Local dataset files are stored in `src/recommender_system/data/` and are excluded
-from version control.
+## Tech Stack
 
-## Dataset
+Python · NumPy · SciPy · pandas · scikit-learn · FastAPI · pytest · Ruff · uv · Docker
 
-The project uses the [Steam User Reviews dataset](https://huggingface.co/datasets/recommender-system/steam-review-and-bundle-dataset).
+## Running the API with Docker
 
-The data contains user reviews of Steam games, including:
+```bash
+docker build -t steam-recommender .
+docker run --rm -p 8000:8000 steam-recommender
+```
 
-- User IDs
-- Game IDs
-- Review text
-- Recommendation outcome
-- Review metadata
-
-The current pipeline extracts user-game interactions from the review data and constructs a sparse user-item interaction matrix.
-
-## Current Approach
-
-### 1. Data processing
-
-Raw review data is loaded and transformed into a tabular representation where each row represents a user-game interaction.
+The interactive API documentation is then available at:
 
 ```text
-Raw Steam reviews
-       ↓
-Data loading
-       ↓
-Review transformation
-       ↓
-User-game interactions
-       ↓
-Sparse interaction matrix
+http://localhost:8000/docs
+```
