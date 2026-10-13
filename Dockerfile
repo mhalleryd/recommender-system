@@ -20,8 +20,10 @@ RUN uv sync --frozen --no-dev
 # Copy trained inference artifacts
 COPY artifacts/mf/ ./artifacts/mf/
 
-EXPOSE 8000
+ENV PATH="/app/.venv/bin:$PATH"
 
-CMD ["uv", "run", "--no-sync", "uvicorn", \
-     "recommender_system.api.main:app", \
-     "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8080
+
+CMD exec uvicorn recommender_system.api.main:app \
+    --host 0.0.0.0 \
+    --port ${PORT:-8080}
